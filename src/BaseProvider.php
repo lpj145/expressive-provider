@@ -95,7 +95,7 @@ abstract class BaseProvider
         }
 
         foreach ($this->providers as $provider) {
-            $this->providerArray = array_merge_recursive($this->providerArray, $provider);
+            $this->providerArray = array_merge_recursive($this->providerArray, (new $provider)());
         }
     }
 }
