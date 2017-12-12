@@ -9,10 +9,15 @@ abstract class BaseProvider
      * @var array
      */
     private $providerArray = [];
+    /**
+     * @var array
+     */
+    protected $providers = [];
 
     public function __invoke()
     {
         $this->register();
+        $this->joinAllProviders();
         return $this->providerArray;
     }
 
@@ -24,31 +29,28 @@ abstract class BaseProvider
     /**
      * @param string $contract
      * @param null $service
-     * @return mixed
      */
     protected function invokables(string $contract, $service)
     {
-        return $this->addToDependencies('invokables', $contract, $service);
+        $this->addToDependencies('invokables', $contract, $service);
     }
 
     /**
      * @param string $contract
      * @param null $service
-     * @return mixed
      */
     protected function factory(string $contract, $service)
     {
-        return $this->addToDependencies('factories', $contract, $service);
+        $this->addToDependencies('factories', $contract, $service);
     }
 
     /**
      * @param string $name
      * @param null $service
-     * @return mixed
      */
     protected function aliases(string $name, $service)
     {
-        return $this->addToDependencies('aliases', $name, $service);
+        $this->addToDependencies('aliases', $name, $service);
     }
 
     /**
@@ -77,10 +79,23 @@ abstract class BaseProvider
      * @param string $namespace
      * @param string $serviceName
      * @param null $service
-     * @return \Closure|null
      */
     private function addToDependencies(string $namespace, string $serviceName, $service)
     {
         $this->providerArray['dependencies'][$namespace][$serviceName] = $service;
+    }
+
+    /**
+     * Join all providers on only provider
+     */
+    private function joinAllProviders()
+    {
+        if (count($this->providers) === 0) {
+            return;
+        }
+
+        foreach ($this->providers as $provider) {
+            $this->providerArray = array_merge_recursive($this->providerArray, $provider);
+        }
     }
 }
