@@ -18,10 +18,10 @@ abstract class RouterProvider implements ProviderContract
 
     /**
      * @param string $path
-     * @param callable $middleware
+     * @param array $middleware
      * @param array $methods
      */
-    protected function addRoute(string $path, callable $middleware, array $methods)
+    protected function addRoute(string $path, $middleware = [], array $methods)
     {
         $this->routes[] = [
           'path' => $path,
